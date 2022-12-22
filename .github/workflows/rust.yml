@@ -1,0 +1,22 @@
+name: Rust
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Rust Unix
+      run: |
+        if rustup --version >/dev/null 2>&1; then
+            rustup update
+        else
+             curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain stable
+             echo ::add-path::$HOME/.cargo/bin
+        fi
+
+    - name: Test
+      run: cargo test

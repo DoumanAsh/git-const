@@ -1,0 +1,17 @@
+[package]
+name = "git-const"
+version = "1.0.0"
+authors = ["Douman <douman@gmx.se>"]
+description = "Proc macro to provide properties of git repo"
+repository = "https://github.com/DoumanAsh/git-const"
+documentation = "https://docs.rs/git-const/"
+license = "BSL-1.0"
+keywords = ["git", "compile-time", "macro"]
+include = [
+    "**/*.rs",
+    "Cargo.toml"
+]
+edition = "2018"
+
+[lib]
+proc-macro = true
