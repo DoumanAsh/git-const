@@ -3,8 +3,9 @@
 //!## Usage
 //!
 //!```rust
-//!use git_const::{git_hash, git_short_hash};
+//!use git_const::{git_hash, git_short_hash, git_root};
 //!
+//!const ROOT: &str = git_root!();
 //!const SHORT_VERSION: &str = git_short_hash!();
 //!const VERSION: &str = git_hash!();
 //!assert_ne!(VERSION, "");
@@ -14,6 +15,8 @@
 //!
 //!const MASTER_VERSION: &str = git_hash!(master);
 //!assert_eq!(MASTER_VERSION, VERSION); //true if current branch is master
+//!let path = std::path::Path::new(ROOT);
+//!assert_eq!(path.file_name().unwrap().to_str().unwrap(), "git-const");
 //!```
 
 #![warn(missing_docs)]
@@ -84,6 +87,18 @@ pub fn git_short_hash(input: TokenStream) -> TokenStream {
     };
 
     let output = match run_git(&["rev-parse", "--short", revision]) {
+        Ok(output) => output,
+        Err(error) => return error,
+    };
+
+    let output = output.trim();
+    format!("\"{output}\"").parse().expect("generate hash string")
+}
+
+#[proc_macro]
+///Retrieves path to root folder of current project repo
+pub fn git_root(_input: TokenStream) -> TokenStream {
+    let output = match run_git(&["rev-parse", "--show-toplevel"]) {
         Ok(output) => output,
         Err(error) => return error,
     };
